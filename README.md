@@ -1,4 +1,4 @@
-# Trabalho Prático da Disciplina de `Testes de Software`
+# `Testes de Software` » Trabalho Prático
 Universidade de Aveiro - ESTGA
 
 Professores: Joaquim Ferreira / André Campos  
