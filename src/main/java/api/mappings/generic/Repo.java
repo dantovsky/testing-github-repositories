@@ -1,16 +1,26 @@
 package api.mappings.generic;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@JsonIgnoreProperties
 public class Repo {
 
-    //TODO: replace this with the parameters of you request
     @JsonProperty("stargazers_count")
     private Integer stargazers_count;
+
+    @JsonProperty("is_template")
+    private Boolean is_template;
 
     @JsonProperty("pushed_at")
     private String pushed_at;
@@ -27,11 +37,17 @@ public class Repo {
     @JsonProperty("issue_comment_url")
     private String issue_comment_url;
 
+    @JsonProperty("allow_rebase_merge")
+    private Boolean allow_rebase_merge;
+
     @JsonProperty("labels_url")
     private String labels_url;
 
     @JsonProperty("subscribers_url")
     private String subscribers_url;
+
+    @JsonProperty("permissions")
+    private Permissions permissions;
 
     @JsonProperty("temp_clone_token")
     private String temp_clone_token;
@@ -54,11 +70,17 @@ public class Repo {
     @JsonProperty("archive_url")
     private String archive_url;
 
+    @JsonProperty("allow_merge_commit")
+    private Boolean allow_merge_commit;
+
     @JsonProperty("git_refs_url")
     private String git_refs_url;
 
     @JsonProperty("forks_url")
     private String forks_url;
+
+    @JsonProperty("visibility")
+    private String visibility;
 
     @JsonProperty("statuses_url")
     private String statuses_url;
@@ -70,13 +92,16 @@ public class Repo {
     private String ssh_url;
 
     @JsonProperty("license")
-    private String license;
+    private License license;
 
     @JsonProperty("full_name")
     private String full_name;
 
     @JsonProperty("size")
     private Integer size;
+
+    @JsonProperty("template_repository")
+    private String template_repository;
 
     @JsonProperty("languages_url")
     private String languages_url;
@@ -132,11 +157,11 @@ public class Repo {
     @JsonProperty("watchers")
     private Integer watchers;
 
-    @JsonProperty("keys_url")
-    private String keys_url;
-
     @JsonProperty("deployments_url")
     private String deployments_url;
+
+    @JsonProperty("keys_url")
+    private String keys_url;
 
     @JsonProperty("has_projects")
     private Boolean has_projects;
@@ -159,6 +184,9 @@ public class Repo {
     @JsonProperty("disabled")
     private Boolean disabled;
 
+    @JsonProperty("delete_branch_on_merge")
+    private Boolean delete_branch_on_merge;
+
     @JsonProperty("git_url")
     private String git_url;
 
@@ -168,6 +196,9 @@ public class Repo {
     @JsonProperty("owner")
     private Owner owner;
 
+    @JsonProperty("allow_squash_merge")
+    private Boolean allow_squash_merge;
+
     @JsonProperty("commits_url")
     private String commits_url;
 
@@ -176,6 +207,9 @@ public class Repo {
 
     @JsonProperty("git_commits_url")
     private String git_commits_url;
+
+    @JsonProperty("<")
+    private List<String> topics;
 
     @JsonProperty("blobs_url")
     private String blobs_url;
