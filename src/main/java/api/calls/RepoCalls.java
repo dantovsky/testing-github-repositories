@@ -7,7 +7,6 @@ import retrofit2.http.*;
 
 public interface RepoCalls {
 
-    // String NAME = "name";
     String REPO = "repo";
     String USERNAME = "username";
     String REPOS_USER_REPO_NAME = "repos/{username}/{repo}"; // GET / DELETE
@@ -22,5 +21,6 @@ public interface RepoCalls {
     Call<Repo> createRepo(@Header(AUTHORIZATION) String token, @Header(ACCEPT) String acceptHeader, @Body RepoBody repoBody);
 
     @DELETE(REPOS_USER_REPO_NAME)
-    Call<Repo> deleteRepo(@Header(AUTHORIZATION) String token, @Header(ACCEPT) String acceptHeader, @Path(USERNAME) String username, @Path(REPO) String repoName);
+    Call<Repo> deleteRepo(@Header(AUTHORIZATION) String token, @Header(ACCEPT) String acceptHeader,
+            @Path(USERNAME) String username, @Path(REPO) String repoName);
 }
