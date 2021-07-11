@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.*;
 /**
  * @author Dante Ferreira Marinho
  */
-public class GetRepoTests {
+public class DeleteRepoTests {
 
     private static String repoName;
     public static String repoDescription;
