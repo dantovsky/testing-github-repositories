@@ -9,7 +9,7 @@ public interface RepoCalls {
 
     String REPO = "repo";
     String USERNAME = "username";
-    String REPOS_USER_REPO_NAME = "repos/{username}/{repo}"; // GET / DELETE
+    String REPOS_USER_REPO_NAME = "repos/{username}/{repo}"; // GET / DELETE / PATCH
     String USER_REPOS = "/user/repos"; // POST
     String ACCEPT = "accept";
     String AUTHORIZATION = "Authorization";
@@ -23,4 +23,8 @@ public interface RepoCalls {
     @DELETE(REPOS_USER_REPO_NAME)
     Call<Repo> deleteRepo(@Header(AUTHORIZATION) String token, @Header(ACCEPT) String acceptHeader,
             @Path(USERNAME) String username, @Path(REPO) String repoName);
+
+    @PATCH(REPOS_USER_REPO_NAME)
+    Call<Repo> updateRepo(@Header(AUTHORIZATION) String token, @Header(ACCEPT) String acceptHeader,
+            @Path(USERNAME) String username, @Path(REPO) String repoName, @Body RepoBody repoBody);
 }

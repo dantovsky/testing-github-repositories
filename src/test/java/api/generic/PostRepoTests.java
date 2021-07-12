@@ -34,6 +34,7 @@ public class PostRepoTests {
         RepoBody repoBody = RepoBody.builder()
                 .name(repoName) // to ensure that each test has its own POST call.
                 .description(repoDescription)
+                .has_wiki(true)
                 .auto_init(true)
                 .build();
 

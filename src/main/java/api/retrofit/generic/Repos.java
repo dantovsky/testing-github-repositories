@@ -29,4 +29,8 @@ public class Repos {
     public static Response<Repo> deleteRepo(String username, String repoName) throws IOException {
         return repoCalls.deleteRepo(TOKEN, ACCEPT_HEADER, username, repoName).execute();
     }
+
+    public static Response<Repo> updateRepo(String username, String repoName, RepoBody repoBody) throws IOException {
+        return repoCalls.updateRepo(TOKEN, ACCEPT_HEADER, username, repoName, repoBody).execute();
+    }
 }

@@ -2,15 +2,14 @@ package api.generic;
 
 import api.mappings.generic.Repo;
 import api.mappings.generic.RepoBody;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import retrofit2.Response;
 
 import java.io.IOException;
 
 import static api.data.Common.REPO_USERNAME;
 import static api.retrofit.generic.Repos.*;
+import static api.validators.ResponseValidator.assertCreated;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -19,17 +18,15 @@ import static org.hamcrest.Matchers.*;
  */
 public class DeleteRepoTests {
 
-    private static String repoName;
-    public static String repoDescription;
-    private static Response<Repo> response;
+    private String repoName;
+    public String repoDescription;
 
-    // Auxiliar method to create a repository
-    @BeforeClass
-    public static void setupBeforeClass() throws IOException {
+    @BeforeMethod
+    public void setupBeforeMethod() throws IOException {
         System.out.println("Before class");
 
-        repoName = "javascript-ninja-course-"  + Math.random();
-        repoDescription = "JavaScript Ninja Course description";
+        repoName = "Temporary-Repository-Delete" + Math.random();
+        repoDescription = "Temporary repository to be deleted";
 
         // --- Cenário :: todos os testes desta classe utilzarão este mesmo cenário
         RepoBody repoBody = RepoBody.builder()
@@ -37,47 +34,44 @@ public class DeleteRepoTests {
                 .description(repoDescription)
                 .auto_init(true)
                 .build();
+
         createRepo(repoBody);
-
-        // --- Ação :: todos testes desta classe utilizarão esta mesma ação
-        response = getRepoByRepoName(REPO_USERNAME, repoName);
     }
 
-    @AfterClass
-    public static void cleaningAfterClass() throws IOException {
-        System.out.println("After class");
-        response = deleteRepo(REPO_USERNAME, repoName);
-    }
+    // --- @AfterMethod ::
+    // Não será utilizado o @AfterMethod, devido à característica deste verbo,
+    // onde já irá realizar o delete cada teste realizado.
 
     // --- Tests
 
-    @Test
-    public void repoShouldNotBeNull() {
-        Repo repo = response.body();
-        assertThat("Repository should not be null", repo, notNullValue());
+    @Test(description = "Delete a repository")
+    public void deleteRepositoryTest() throws IOException {
+
+        Response<Repo> response = deleteRepo(REPO_USERNAME, repoName);
+        assertThat("the repository should have status code 204 (deleted)", response.code(), is(204));
     }
 
-    @Test
-    public void repoNameShoulNotBeNull() {
-        Repo repo = response.body();
-        assertThat("Repository name should not be null", repo.getName(), notNullValue());
+    @Test(description = "The response hasn't a body")
+    public void deletedRepoHasNotBody() throws IOException {
+
+        Response<Repo> response = deleteRepo(REPO_USERNAME, repoName);
+        assertThat("the deleted repository response shouldn't have a body", response.body(), nullValue());
     }
 
-    @Test
-    public void repoNameShoulMatch() {
-        Repo repo = response.body();
-        assertThat("Repository name should matche.", repo.getName(), is(repoName));
+    @Test(description = "Deleting repository operation is successful")
+    public void deleteRepoIssuccessful() throws IOException {
+
+        Response<Repo> response = deleteRepo(REPO_USERNAME, repoName);
+        assertThat("the repository should have status code 204 (deleted)", response.isSuccessful(), is(true));
     }
 
-    @Test
-    public void repoNameShoulStartsWith() {
-        Repo repo = response.body();
-        assertThat("Repository name should starts with.", repo.getName(), startsWith(repoName.substring(0, 3)));
-    }
+    @Test(description = "Trying to delete a non existent repository")
+    public void deleteRepositoryNonExistent() throws IOException {
 
-    @Test
-    public void repoDescriptionShoulMatch() {
-        Repo repo = response.body();
-        assertThat("Repository description should matche.", repo.getDescription(), is(repoDescription));
+        Response<Repo> response = deleteRepo(REPO_USERNAME,"The Fake Repo");
+        assertThat("the repository doesn't exists", response.code(), is(404));
+
+        // --- Limpando o repositório atual criado pelo @BeforeMethod
+        deleteRepo(REPO_USERNAME, repoName);
     }
 }

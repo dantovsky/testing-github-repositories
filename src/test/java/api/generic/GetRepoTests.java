@@ -19,13 +19,13 @@ import static org.hamcrest.Matchers.*;
  */
 public class GetRepoTests {
 
-    private static String repoName;
-    public static String repoDescription;
-    private static Response<Repo> response;
+    private String repoName;
+    public String repoDescription;
+    private Response<Repo> response;
 
     // Auxiliar method to create a repository
     @BeforeClass
-    public static void setupBeforeClass() throws IOException {
+    public void setupBeforeClass() throws IOException {
         System.out.println("Before class");
 
         repoName = "javascript-ninja-course-"  + Math.random();
@@ -44,7 +44,7 @@ public class GetRepoTests {
     }
 
     @AfterClass
-    public static void cleaningAfterClass() throws IOException {
+    public void cleaningAfterClass() throws IOException {
         System.out.println("After class");
         response = deleteRepo(REPO_USERNAME, repoName);
     }
