@@ -51,49 +51,49 @@ public class PostRepoTests {
     // --- Tests
 
     @Test(description = "Shoul return object not null")
-    public void shouldReturnObjectNotNull() throws IOException {
+    public void shouldReturnObjectNotNull() {
 
         Repo repo = response.body();
         assertThat("response should not be null", repo, notNullValue());
     }
 
     @Test(description = "Name should starts with Java")
-    public void nameRepoShoulNotBeNull() throws IOException {
+    public void nameRepoShoulNotBeNull() {
 
         Repo repo = response.body();
         assertThat("name should not be null", repo.getName(), notNullValue());
     }
 
     @Test(description = "Name should starts with 'Java'")
-    public void nameRepoShoulStartsWithJava() throws IOException {
+    public void nameRepoShoulStartsWithJava() {
 
         Repo repo = response.body();
         assertThat("name should starts with Java", repo.getName(), startsWith("Java"));
     }
 
     @Test(description = "Description should match")
-    public void descriptionRepoShoudMatch() throws IOException {
+    public void descriptionRepoShoudMatch() {
 
         Repo repo = response.body();
         assertThat("description should be Description Repository Java Ninja", repo.getDescription(), is(repoDescription));
     }
 
     @Test(description = "Description should starts with 'Description'")
-    public void descriptionRepoShoudStartsWithDescription() throws IOException {
+    public void descriptionRepoShoudStartsWithDescription() {
 
         Repo repo = response.body();
         assertThat("description should starts with 'Description'", repo.getDescription(), startsWith("Description"));
     }
 
-//    @Test(description = "Repo visibility is 'public' (not private)")
-//    public void repoHasPublicVisibility() throws IOException {
-//
-//        Repo repo = response.body();
-//        assertThat("repo has 'public' visibility", repo.getVisibility(), is("public"));
-//    }
+    @Test(description = "Repo visibility is 'public' (not private)")
+    public void repoHasPublicVisibility() {
+
+        Repo repo = response.body();
+        assertThat("repo has 'public' visibility", repo.getVisibility(), is("public"));
+    }
 
     @Test(description = "Repo has wiki activated")
-    public void repoHasWiki() throws IOException {
+    public void repoHasWiki() {
 
         Repo repo = response.body();
         assertThat("repo has wiki", repo.getHas_wiki(), is(true));
@@ -109,7 +109,6 @@ public class PostRepoTests {
                 .build();
 
         Response<Repo> responseSameRepo = createRepo(repoBody);
-
         assertThat("existing repo :: should return status code 422", responseSameRepo.code(), is(422));
     }
 }

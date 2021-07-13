@@ -1,17 +1,19 @@
 package api.generic;
 
+import api.mappings.generic.ErrorResponse;
 import api.mappings.generic.Repo;
 import api.mappings.generic.RepoBody;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import retrofit2.Response;
 
 import java.io.IOException;
 
 import static api.data.Common.REPO_USERNAME;
+import static api.retrofit.generic.Errors.getErrorsResponse;
 import static api.retrofit.generic.Repos.*;
+import static api.validators.ErrorResponseValidator.assertErrorResponse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -20,34 +22,12 @@ import static org.hamcrest.Matchers.*;
  */
 public class PatchRepoTests {
 
-    // Testes para fazer ::
-    // status code is 200
-    // "name" match new name
-    // "description": "Description for may New Repo"
-    // has_wiki to false
-    // notNullValue
-    // "homepage": https://www.imediacto.com
-    // "open_issues": 0,
-    // update fake: status code 404
-    // update fake: "message" is "Not Found"
-
-    // sem enviar body :: status code 400, "message": "Body should be a JSON object"
-    // "html_url": "https://github.com/dantinTests/Um-New-Repo-13-Updated"
-    // "delete_branch_on_merge": false,
-    // "archived"	(não pode desfazer através da API)
-    // "git_url": "git://github.com/dantinTests/for-updatesssss.git",
-    // "ssh_url": "git@github.com:dantinTests/for-updatesssss.git",
-    // "clone_url": "https://github.com/dantinTests/for-updatesssss.git",
-    // "svn_url": "https://github.com/dantinTests/for-updatesssss",
-
-
     private String repoName;
     public String repoDescription;
     private Response<Repo> response;
 
     @BeforeClass
     public void setupBeforeClass() throws IOException {
-        System.out.println("Before class");
 
         repoName = "Temporary-Repository-Patch";
         repoDescription = "Repo using for updates.";
@@ -58,6 +38,7 @@ public class PatchRepoTests {
                 .description(repoDescription)
                 .has_wiki(true)
                 .auto_init(true)
+                .delete_branch_on_merge(true)
                 .build();
         createRepo(repoBody);
 
@@ -77,7 +58,6 @@ public class PatchRepoTests {
 
     @AfterClass
     public void cleaningAfterClass() throws IOException {
-        System.out.println("After class");
         deleteRepo(REPO_USERNAME, repoName);
     }
 
@@ -86,7 +66,7 @@ public class PatchRepoTests {
     @Test(description = "Should get status code 200")
     public void shouldGetStatusCode200() {
 
-        assertThat("the status code is 200", response.code(), is(200));
+        assertThat("the status code should be 200", response.code(), is(200));
     }
 
     @Test(description = "Should be not null value")
@@ -131,6 +111,65 @@ public class PatchRepoTests {
         assertThat("open_issues should be 0", repo.getOpen_issues(), is(0));
     }
 
+    @Test(description = "Param delete_branch_on_merge should be true")
+    public void shouldDeleteBranchOnMergeBeTrue() {
+
+        Repo repo = response.body();
+        assertThat("delete_branch_on_merge should be true", repo.getDelete_branch_on_merge(), is(true));
+    }
+
+    @Test(description = "Param html_url should match")
+    public void shouldHtmlUrlMatch() {
+
+        String htmlUrl = "https://github.com/" + REPO_USERNAME + "/" + repoName;
+        Repo repo = response.body();
+
+        assertThat(String.format("html_url should be [%s]", htmlUrl), repo.getHtml_url(), is(htmlUrl));
+    }
+
+    @Test(description = "Param git_url should match")
+    public void shouldGitUrlMatch() {
+
+        String gitUrl = "git://github.com/" + REPO_USERNAME + "/" + repoName + ".git";
+        Repo repo = response.body();
+
+        assertThat(String.format("git_url should be [%s]", gitUrl), repo.getGit_url(), is(gitUrl));
+    }
+
+    @Test(description = "Param ssh_url should match")
+    public void shouldSshUrlMatch() {
+
+        String sshUrl = "git@github.com:" + REPO_USERNAME + "/" + repoName + ".git";
+        Repo repo = response.body();
+
+        assertThat(String.format("ssh_url should be [%s]", sshUrl), repo.getSsh_url(), is(sshUrl));
+    }
+
+    @Test(description = "Param clone_url should match")
+    public void shouldCloneUrlMatch() {
+
+        String cloneUrl = "https://github.com/" + REPO_USERNAME + "/" + repoName + ".git";
+        Repo repo = response.body();
+
+        assertThat(String.format("clone_url should be [%s]", cloneUrl), repo.getClone_url(), is(cloneUrl));
+    }
+
+    @Test(description = "Param svn_url should match")
+    public void shouldSvnUrlMatch() {
+
+        String svnUrl = "https://github.com/" + REPO_USERNAME + "/" + repoName;
+        Repo repo = response.body();
+
+        assertThat(String.format("svn_url should be [%s]", svnUrl), repo.getSvn_url(), is(svnUrl));
+    }
+
+    @Test(description = "The repo should not be archived")
+    public void shouldNotBeArchived() {
+
+        Repo repo = response.body();
+        assertThat(String.format("should be archived assigned as [%b]", false), repo.getArchived(), is(false));
+    }
+
     @Test(description = "Trying to update a non existent repository")
     public void updateRepositoryNonExistent() throws IOException {
 
@@ -138,10 +177,11 @@ public class PatchRepoTests {
                 .name("The Other New Name")
                 .build();
 
-        response = updateRepo(REPO_USERNAME, repoName, repoBodyPatch);
-
-        Response<Repo> response = updateRepo(REPO_USERNAME, "The Fake Repo", repoBodyPatch);
+        response = updateRepo(REPO_USERNAME, "The Fake Repo", repoBodyPatch);
         assertThat("the repository doesn't exists", response.code(), is(404));
+
+        ErrorResponse error = getErrorsResponse(response);
+        assertErrorResponse(error, "Not Found", "https://docs.github.com/rest/reference/repos#update-a-repository");
     }
 
     @Test(description = "Trying to update a non existent repository")
@@ -151,11 +191,11 @@ public class PatchRepoTests {
                 .name("The Other New Name")
                 .build();
 
-        response = updateRepo(REPO_USERNAME, repoName, repoBodyPatch);
+        response = updateRepo(REPO_USERNAME, "The Fake Repo", repoBodyPatch);
+        assertThat("the message is 'Not Found'", response.message(), is(oneOf("Not Found", "")));
 
-        Response<Repo> response = updateRepo(REPO_USERNAME, "The Fake Repo", repoBodyPatch);
-        System.out.println(response);
-        assertThat("the message is 'Not Found'", response.message(), is(oneOf("Not Found", ""))); // Not working
+        ErrorResponse error = getErrorsResponse(response);
+        assertErrorResponse(error, "Not Found", "https://docs.github.com/rest/reference/repos#update-a-repository");
     }
 }
 

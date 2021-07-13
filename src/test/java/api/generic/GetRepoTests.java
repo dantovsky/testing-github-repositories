@@ -26,7 +26,6 @@ public class GetRepoTests {
     // Auxiliar method to create a repository
     @BeforeClass
     public void setupBeforeClass() throws IOException {
-        System.out.println("Before class");
 
         repoName = "javascript-ninja-course-"  + Math.random();
         repoDescription = "JavaScript Ninja Course description";
@@ -45,7 +44,6 @@ public class GetRepoTests {
 
     @AfterClass
     public void cleaningAfterClass() throws IOException {
-        System.out.println("After class");
         response = deleteRepo(REPO_USERNAME, repoName);
     }
 
@@ -78,6 +76,6 @@ public class GetRepoTests {
     @Test
     public void repoDescriptionShoulMatch() {
         Repo repo = response.body();
-        assertThat("Repository description should matche.", repo.getDescription(), is(repoDescription));
+        assertThat("Repository description should match.", repo.getDescription(), is(repoDescription));
     }
 }
