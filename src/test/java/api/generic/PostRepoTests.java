@@ -12,7 +12,6 @@ import java.io.IOException;
 import static api.data.Common.REPO_USERNAME;
 import static api.retrofit.generic.Repos.createRepo;
 import static api.retrofit.generic.Repos.deleteRepo;
-import static api.validators.ResponseValidator.assertNoContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -21,9 +20,9 @@ import static org.hamcrest.Matchers.*;
  */
 public class PostRepoTests {
 
-    public static String repoName;
-    public static String repoDescription;
-    public Response<Repo> response;
+    private String repoName;
+    private String repoDescription;
+    private Response<Repo> response;
 
     @BeforeMethod
     public void setupBeforeTest() throws IOException {
@@ -44,62 +43,61 @@ public class PostRepoTests {
     @AfterMethod
     public void cleaningAfterEachTest() throws IOException {
 
-        response = deleteRepo(REPO_USERNAME,repoName);
-        assertNoContent(response);
+        deleteRepo(REPO_USERNAME,repoName);
     }
 
     // --- Tests
 
-    @Test(description = "Shoul return object not null")
+    @Test(description = "Shoul return object not null") // CT 06
     public void shouldReturnObjectNotNull() {
 
         Repo repo = response.body();
         assertThat("response should not be null", repo, notNullValue());
     }
 
-    @Test(description = "Name should starts with Java")
+    @Test(description = "Name should starts with Java") // CT 07
     public void nameRepoShoulNotBeNull() {
 
         Repo repo = response.body();
         assertThat("name should not be null", repo.getName(), notNullValue());
     }
 
-    @Test(description = "Name should starts with 'Java'")
+    @Test(description = "Name should starts with 'Java'") // CT 08
     public void nameRepoShoulStartsWithJava() {
 
         Repo repo = response.body();
         assertThat("name should starts with Java", repo.getName(), startsWith("Java"));
     }
 
-    @Test(description = "Description should match")
+    @Test(description = "Description should match") // CT 09
     public void descriptionRepoShoudMatch() {
 
         Repo repo = response.body();
         assertThat("description should be Description Repository Java Ninja", repo.getDescription(), is(repoDescription));
     }
 
-    @Test(description = "Description should starts with 'Description'")
+    @Test(description = "Description should starts with 'Description'") // CT 10
     public void descriptionRepoShoudStartsWithDescription() {
 
         Repo repo = response.body();
         assertThat("description should starts with 'Description'", repo.getDescription(), startsWith("Description"));
     }
 
-    @Test(description = "Repo visibility is 'public' (not private)")
+    @Test(description = "Repo visibility is 'public' (not private)") // CT 11
     public void repoHasPublicVisibility() {
 
         Repo repo = response.body();
         assertThat("repo has 'public' visibility", repo.getVisibility(), is("public"));
     }
 
-    @Test(description = "Repo has wiki activated")
+    @Test(description = "Repo has wiki activated") // CT 12
     public void repoHasWiki() {
 
         Repo repo = response.body();
         assertThat("repo has wiki", repo.getHas_wiki(), is(true));
     }
 
-    @Test(description = "Trying to create a repository with same name shoul return status 422")
+    @Test(description = "Trying to create a repository with same name shoul return status 422") // CT 13
     public void creatingRepoWithSameName() throws IOException {
 
         RepoBody repoBody = RepoBody.builder()

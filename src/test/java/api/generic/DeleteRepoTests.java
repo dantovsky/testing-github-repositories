@@ -24,11 +24,10 @@ import static org.hamcrest.Matchers.nullValue;
 public class DeleteRepoTests {
 
     private String repoName;
-    public String repoDescription;
+    private String repoDescription;
 
     @BeforeMethod
     public void setupBeforeMethod() throws IOException {
-        System.out.println("Before class");
 
         repoName = "Temporary-Repository-Delete" + Math.random();
         repoDescription = "Temporary repository to be deleted";
@@ -49,28 +48,28 @@ public class DeleteRepoTests {
 
     // --- Tests
 
-    @Test(description = "Delete a repository")
+    @Test(description = "Delete a repository") // CT 30
     public void deleteRepositoryTest() throws IOException {
 
         Response<Repo> response = deleteRepo(REPO_USERNAME, repoName);
         assertThat("the repository should have status code 204 (deleted)", response.code(), is(204));
     }
 
-    @Test(description = "The response hasn't a body")
+    @Test(description = "The response hasn't a body") // CT 31
     public void deletedRepoHasNotBody() throws IOException {
 
         Response<Repo> response = deleteRepo(REPO_USERNAME, repoName);
         assertThat("the deleted repository response shouldn't have a body", response.body(), nullValue());
     }
 
-    @Test(description = "Deleting repository operation is successful")
+    @Test(description = "Deleting repository operation is successful") // CT 32
     public void deleteRepoIsSuccessful() throws IOException {
 
         Response<Repo> response = deleteRepo(REPO_USERNAME, repoName);
-        assertThat("the repository should have status code 204 (deleted)", response.isSuccessful(), is(true));
+        assertThat("the repository should have be deleted successfully", response.isSuccessful(), is(true));
     }
 
-    @Test(description = "Trying to delete a non existent repository")
+    @Test(description = "Trying to delete a non existent repository") // CT 33
     public void deleteRepositoryNonExistent() throws IOException {
 
         Response<Repo> response = deleteRepo(REPO_USERNAME,"The Fake Repo");

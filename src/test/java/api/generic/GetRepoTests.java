@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.*;
 public class GetRepoTests {
 
     private String repoName;
-    public String repoDescription;
+    private String repoDescription;
     private Response<Repo> response;
 
     // Auxiliar method to create a repository
@@ -49,33 +49,33 @@ public class GetRepoTests {
 
     // --- Tests
 
-    @Test
+    @Test(description = "The repo should not be null") // CT 01
     public void repoShouldNotBeNull() {
         Repo repo = response.body();
-        assertThat("Repository should not be null", repo, notNullValue());
+        assertThat("repository should not be null", repo, notNullValue());
     }
 
-    @Test
+    @Test(description = "Repo name should not be null") // CT 02
     public void repoNameShoulNotBeNull() {
         Repo repo = response.body();
-        assertThat("Repository name should not be null", repo.getName(), notNullValue());
+        assertThat("repository name should not be null", repo.getName(), notNullValue());
     }
 
-    @Test
+    @Test(description = "Repo name should match") // CT 03
     public void repoNameShoulMatch() {
         Repo repo = response.body();
-        assertThat("Repository name should matche.", repo.getName(), is(repoName));
+        assertThat("repository name should match.", repo.getName(), is(repoName));
     }
 
-    @Test
+    @Test(description = "Repo name should starts with") // CT 04
     public void repoNameShoulStartsWith() {
         Repo repo = response.body();
-        assertThat("Repository name should starts with.", repo.getName(), startsWith(repoName.substring(0, 3)));
+        assertThat(String.format("repository name should starts with.", repoName.substring(0, 3)), repo.getName(), startsWith(repoName.substring(0, 3)));
     }
 
-    @Test
+    @Test(description = "Repo description should match") // CT 05
     public void repoDescriptionShoulMatch() {
         Repo repo = response.body();
-        assertThat("Repository description should match.", repo.getDescription(), is(repoDescription));
+        assertThat("repository description should match.", repo.getDescription(), is(repoDescription));
     }
 }
